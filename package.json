@@ -1,5 +1,5 @@
 {
-  "name": "testProj webdriverio",
+  "name": "testproj-webdriverio",
   "type": "module",
   "devDependencies": {
     "@wdio/cli": "^9.19.1",
