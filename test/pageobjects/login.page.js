@@ -8,6 +8,8 @@ class LoginPage extends Page {
     get inputUsername () { return $('#user-name'); }
     get inputPassword () { return $('#password'); }
     get btnSubmit () { return $('[name="login-button"]'); }
+    get errorMessage () { return $('.error-message-container'); }
+    get errorIcon () { return $$('[class*="error_icon"]'); } 
 
     async login (username, password) {
         await this.inputUsername.setValue(username);
