@@ -1,8 +1,7 @@
-import { $ } from '@wdio/globals'
-import Page from './page.js';
-import InventoryPage from './inventory.page.js';
+import page from './page.js';
+import inventoryPage from './inventory.page.js';
 
-class LoginPage extends Page {
+class LoginPage extends page {
     get username () { return 'standard_user'; }
     get password () { return 'secret_sauce'; }
 
@@ -37,7 +36,7 @@ class LoginPage extends Page {
             { timeout: 5000, timeoutMsg: 'User was not redirected' }
         );
 
-        await InventoryPage.assertInventoryPageLoaded();
+        await inventoryPage.assertInventoryPageLoaded();
     }
 
     async assertLoginError() {
@@ -49,7 +48,7 @@ class LoginPage extends Page {
             'Epic sadface',
             { containing: true }
         );
-        
+
         await expect(this.errorIcon).toBeElementsArrayOfSize({ eq: 2 });
     }
 

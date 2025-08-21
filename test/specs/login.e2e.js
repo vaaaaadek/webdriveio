@@ -1,28 +1,27 @@
-import { browser, expect } from '@wdio/globals'
-import LoginPage from '../pageobjects/login.page.js'
-import InventoryPage from '../pageobjects/inventory.page.js'
+import loginPage from '../pageobjects/login.page.js'
+import inventoryPage from '../pageobjects/inventory.page.js'
 
 describe('Login', () => {
     beforeEach(async () => {
-        await LoginPage.open();
+        await loginPage.open();
     });
 
     it('Valid login', async () => {
-        await LoginPage.assertLoginPageLoaded();
-        await LoginPage.loginAndVerify(LoginPage.username, LoginPage.password);
-        await InventoryPage.assertInventoryPageLoaded(); 
+        await loginPage.assertLoginPageLoaded();
+        await loginPage.loginAndVerify(loginPage.username, loginPage.password);
+        await inventoryPage.assertInventoryPageLoaded(); 
     });
 
     it('Login with invalid password', async () => {
-        await LoginPage.login(LoginPage.username, 'wrongPass');
+        await loginPage.login(loginPage.username, 'wrongPass');
 
-        await LoginPage.assertLoginError();
+        await loginPage.assertLoginError();
     });
 
     it('Login with invalid login', async () => {
-        await LoginPage.login('not_standard_user', LoginPage.password);
+        await loginPage.login('not_standard_user', loginPage.password);
 
-        await LoginPage.assertLoginError();
+        await loginPage.assertLoginError();
     });
-})
+});
 

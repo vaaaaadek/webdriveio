@@ -1,8 +1,6 @@
-import { $, expect } from '@wdio/globals'
-import Page from './page.js';
-import InventoryPage from './inventory.page.js';
+import page from './page.js';
 
-class CartPage extends Page {
+class CartPage extends page {
     get title() { return $('.title'); }
     get cartItems() { return $$('.cart_item'); }
     get checkoutButton() { return $('#checkout'); }
