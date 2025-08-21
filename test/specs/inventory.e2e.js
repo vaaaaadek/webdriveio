@@ -5,35 +5,28 @@ import InventoryPage from '../pageobjects/inventory.page.js'
 describe('Login', () => {
     beforeEach(async () => {
         await LoginPage.open();
-        await LoginPage.login('standard_user', 'secret_sauce');
+        await LoginPage.login(LoginPage.username, LoginPage.password);
     });
 
     it('Logout', async () => {
-        await InventoryPage.burgerButton.click();
-        expect(InventoryPage.bmMenu).toBeDisplayed();
-        
-        const items = await InventoryPage.bmMenuItem;
-        const visibleItems = [];
-        for (const el of items) {
-            if (await el.isDisplayed()) {
-                visibleItems.push(el);
-            }
-        }
-        expect(visibleItems.length).toBe(4);
-        
-        expect(InventoryPage.logoutButton).toBeDisplayed();
-        expect(InventoryPage.logoutButton).toHaveText('Logout');
-        await InventoryPage.logoutButton.click();
+        await InventoryPage.logoutAndVerify();        
+        await LoginPage.assertLoginPageLoaded();
+    });
 
-        await browser.waitUntil(
-            async () => (await browser.getUrl()) === 'https://www.saucedemo.com/',
-            { timeout: 5000, timeoutMsg: 'User was not redirected' }
-        );
+    it('Saving the cart after logout', async () => {
+        const productName = await InventoryPage.products[0].$('.inventory_item_name').getText();
+
+        await InventoryPage.products[0].$('.btn_inventory').click();
+        expect(InventoryPage.products[0].$('.btn_inventory')).toHaveText('Remove');
         
-        await expect(LoginPage.inputUsername).toBeDisplayed();
-        await expect(LoginPage.inputPassword).toBeDisplayed();
-        await expect(LoginPage.inputUsername).toHaveText('');
-        await expect(LoginPage.inputPassword).toHaveText('');
+        expect (InventoryPage.cartIcon).toBeDisplayed();
+        expect (InventoryPage.cartIcon).toHaveText('1');
+
+        await InventoryPage.logoutAndVerify();
+        await LoginPage.assertLoginPageLoaded();
+
+        await LoginPage.loginAndVerify(LoginPage.username, LoginPage.password);
+        await InventoryPage.assertInventoryPageLoaded();
 
     });
 })

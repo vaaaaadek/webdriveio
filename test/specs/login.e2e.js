@@ -8,48 +8,21 @@ describe('Login', () => {
     });
 
     it('Valid login', async () => {
-        const currentUrl = await browser.getUrl();
-
-        await LoginPage.login('standard_user', 'secret_sauce');
-
-        await browser.waitUntil(
-            async () => (await browser.getUrl()) !== currentUrl,
-            { timeout: 5000, timeoutMsg: 'User was not redirected' }
-        );
-
-        await expect(InventoryPage.title).toBeDisplayed();        
-        await expect(InventoryPage.title).toHaveText('Products');
-        await expect(InventoryPage.cartIcon).toBeDisplayed();
-        await expect(InventoryPage.products).toBeElementsArrayOfSize({ gte: 1 });        
-
+        await LoginPage.assertLoginPageLoaded();
+        await LoginPage.loginAndVerify(LoginPage.username, LoginPage.password);
+        await InventoryPage.assertInventoryPageLoaded(); 
     });
 
     it('Login with invalid password', async () => {
-        await LoginPage.login('standard_user', 'wrongPass');
+        await LoginPage.login(LoginPage.username, 'wrongPass');
 
-        await expect(LoginPage.inputUsername).toHaveElementClass('error');
-        await expect(LoginPage.inputPassword).toHaveElementClass('error');
-
-        await expect(LoginPage.errorMessage).toBeDisplayed();
-        await expect(LoginPage.errorMessage).toHaveText(
-            'Epic sadface',
-            { containing: true }
-        );
-        await expect(LoginPage.errorIcon).toBeElementsArrayOfSize({ eq: 2 });
+        await LoginPage.assertLoginError();
     });
 
     it('Login with invalid login', async () => {
-        await LoginPage.login('not_standard_user', 'secret_sauce');
+        await LoginPage.login('not_standard_user', LoginPage.password);
 
-        await expect(LoginPage.inputUsername).toHaveElementClass('error');
-        await expect(LoginPage.inputPassword).toHaveElementClass('error');
-
-        await expect(LoginPage.errorMessage).toBeDisplayed();
-        await expect(LoginPage.errorMessage).toHaveText(
-            'Epic sadface',
-            { containing: true }
-        );
-        await expect(LoginPage.errorIcon).toBeElementsArrayOfSize({ eq: 2 });
+        await LoginPage.assertLoginError();
     });
 })
 
