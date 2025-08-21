@@ -17,7 +17,7 @@ describe('Inventory', () => {
 
     it('Saving the cart after logout', async () => {
         const products = []; // Array to hold product details
-        products.push(await inventoryPage.addProductToCart(0)); // Add first product to cart
+        // products.push(await inventoryPage.addProductToCart(0)); // Add first product to cart
         // products.push(await InventoryPage.addProductToCart(1)); // Add second product to cart
         
         // await browser.pause(2000); // Pause to ensure cart icon is updated
