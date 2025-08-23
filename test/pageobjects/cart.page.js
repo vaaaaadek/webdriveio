@@ -1,7 +1,9 @@
 import page from './page.js';
+import inventoryPage from './inventory.page.js';
 
 class CartPage extends page {
     get title() { return $('.title'); }
+    get cartContentsContainer() { return $('#cart_contents_container'); } 
     get cartItems() { return $$('.cart_item'); }
     get checkoutButton() { return $('#checkout'); }
     get continueShoppingButton() { return $('#continue-shopping'); }
@@ -36,6 +38,17 @@ class CartPage extends page {
         }
     }
 
+    async expectCartEmptyError() {
+        await expect(this.cartItems).toBeElementsArrayOfSize(0);
+        await this.checkoutButton.click();
+        await this.assertCartPageLoaded();
+        
+        const errorMessage = await this.cartContentsContainer.$('.error-message-container');
+        await expect(errorMessage).toBeExisting();
+        await expect(errorMessage).toBeDisplayed();
+        await expect(errorMessage.getText()).toContain('Your cart is empty');
+    }
+
     async getCartItemsCount() {
         return (await this.cartItems).length;
     }
@@ -45,7 +58,15 @@ class CartPage extends page {
     }
 
     async continueShopping() {
+        const currentUrl = await browser.getUrl();
         await this.continueShoppingButton.click();
+
+        await browser.waitUntil(
+            async () => (await browser.getUrl()) !== currentUrl,
+            { timeout: 5000, timeoutMsg: 'User was not redirected to inventory page' }
+        );
+
+        await inventoryPage.assertInventoryPageLoaded();
     }
 }
 
