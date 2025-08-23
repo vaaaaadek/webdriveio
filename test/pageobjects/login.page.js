@@ -11,26 +11,28 @@ class LoginPage extends page {
     get errorMessage () { return $('.error-message-container'); }
     get errorIcon () { return $$('[class*="error_icon"]'); } 
 
-    async assertLoginPageLoaded() {
+    async assertLoginElementsLoaded() { // Verify login page elements are displayed
         await expect(this.inputUsername).toBeDisplayed();
         await expect(this.inputPassword).toBeDisplayed();
         await expect(this.btnSubmit).toBeDisplayed();
+    }
+
+    async assertLoginPageLoaded() { // Verify login page elements are displayed correctly
+        await this.assertLoginElementsLoaded();
 
         await expect(this.inputUsername).toHaveText('');
         await expect(this.inputPassword).toHaveText('');
     }
 
-    async login (username, password) {
+    async login(username, password) {
         await this.inputUsername.setValue(username);
         await this.inputPassword.setValue(password);
         await this.btnSubmit.click();
     }
 
-    async loginAndVerify (username, password) {
-        const currentUrl = await browser.getUrl();
-        
+    async loginAndVerify(username, password) {
+        const currentUrl = await browser.getUrl();        
         await this.login(username, password);
-
         await browser.waitUntil(
             async () => (await browser.getUrl()) !== currentUrl,
             { timeout: 5000, timeoutMsg: 'User was not redirected' }
@@ -39,7 +41,9 @@ class LoginPage extends page {
         await inventoryPage.assertInventoryPageLoaded();
     }
 
-    async assertLoginError() {
+    async assertLoginError() { // Verify error message and indicators are displayed correctly
+        await this.assertLoginElementsLoaded();
+
         await expect(this.inputUsername).toHaveElementClass('error');
         await expect(this.inputPassword).toHaveElementClass('error');
 

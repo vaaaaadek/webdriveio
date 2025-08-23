@@ -12,7 +12,7 @@ class CartPage extends page {
         await expect(this.cartItems).toBeElementsArrayOfSize({ gte: 0 });
     }
 
-    async assertCartItemsLoaded(itemsCount) {
+    async assertCartItemsLoaded(itemsCount) { // Verify cart has at least the expected number of items
         const cartItems = await this.cartItems;
         expect(cartItems.length).toBeGreaterThan(itemsCount - 1);
 
@@ -24,15 +24,15 @@ class CartPage extends page {
         }
     }
 
-    async verifyCartItemsDetails(items) {
+    async verifyCartItemsDetails(items) { // Verify cart items match expected details
         const cartItems = await this.cartItems;
         expect(cartItems.length).toBe(items.length);
         
         for (let i = 0; i < items.length; i++) {
             const item = cartItems[i];
             
-            expect(await item.$('.inventory_item_name').getText()).toBe(items[i].productName);
-            expect(await item.$('.inventory_item_price').getText()).toBe(items[i].productPrice);
+            await expect(await item.$('.inventory_item_name').getText()).toBe(items[i].productName);
+            await expect(await item.$('.inventory_item_price').getText()).toBe(items[i].productPrice);
         }
     }
 

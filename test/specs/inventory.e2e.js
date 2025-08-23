@@ -3,28 +3,24 @@ import inventoryPage from '../pageobjects/inventory.page.js';
 import cartPage from '../pageobjects/cart.page.js';
 
 describe('Inventory', () => {
-    beforeEach(async () => {
+    beforeEach(async () => { // Ensure user is logged in before each test
         await loginPage.open();
-        await loginPage.login(loginPage.username, loginPage.password);
-        await inventoryPage.assertInventoryPageLoaded();
+        await loginPage.loginAndVerify(loginPage.username, loginPage.password);
         await inventoryPage.expectCartDisplayedProperly(0); // Ensure cart is empty before tests
     });
     
-    it('Logout', async () => {
+    it('Logout', async () => { // Verify logout functionality
         await inventoryPage.logoutAndVerify();        
         await loginPage.assertLoginPageLoaded();
     });
 
-    it('Saving the cart after logout', async () => {
-        const products = []; // Array to hold product details
-        // products.push(await inventoryPage.addProductToCart(0)); // Add first product to cart
+    it('Saving the cart after logout', async () => { // Verify cart contents persist after logout and login
+        let products = []; // Array to hold product details
+        products.push(await inventoryPage.addProductToCart(0)); // Add first product to cart
         // products.push(await InventoryPage.addProductToCart(1)); // Add second product to cart
         
-        // await browser.pause(2000); // Pause to ensure cart icon is updated
-
         await inventoryPage.expectCartDisplayedProperly(products.length);
-
-
+        
         await inventoryPage.logoutAndVerify();
         await loginPage.assertLoginPageLoaded();
 
@@ -38,7 +34,7 @@ describe('Inventory', () => {
 
     });
     
-    it('Sorting', async () => {
+    it('Sorting', async () => { // Verify product sorting functionality
         await inventoryPage.assertProductSortOptionsLoaded();
         await inventoryPage.assertSortingOPtionsDefined();
 
@@ -47,6 +43,16 @@ describe('Inventory', () => {
             await inventoryPage.verifySortingApplied();
         }        
 
+    });
+    
+
+    it('Footer links', async () => {
+        await inventoryPage.verifyFooterLinks(); // Verify footer links are displayed correctly
+
+        for (const link of await inventoryPage.footerLinks) { // Verify each social link navigates correctly
+            await inventoryPage.goToSocialLink(link); 
+            await inventoryPage.assertInventoryPageLoaded(); // Ensure we return to inventory page   
+        }
     });
 
 });
